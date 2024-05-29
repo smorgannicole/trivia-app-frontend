@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useCallback } from "react"
 import "./App.css"
 import Home from "./pages/Home"
 import { Route, Routes } from "react-router-dom"
@@ -16,7 +16,7 @@ const App = () => {
   const fetchQuestions = useCallback(async (retry = 0) => {
     try {
       const response = await fetch(
-        "https://opentdb.com/api.php?amount=10&encode=url3986"
+        "https://opentdb.com/api.php?amount=1&encode=url3986"
       )
       if (response.status === 429) {
         if (retry < 3) {
@@ -39,14 +39,6 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => {
-    fetchQuestions()
-  }, [fetchQuestions])
-
-  if (loading) {
-    return <div>Loading...</div>
-  }
-
   if (error) {
     return <div>Error: {error.message}</div>
   }
@@ -57,7 +49,12 @@ const App = () => {
       <Route
         path="/questions"
         element={
-          <TriviaQuestions questions={questions} decodeUrl={decodeUrl} />
+          <TriviaQuestions
+            questions={questions}
+            decodeUrl={decodeUrl}
+            fetchQuestions={fetchQuestions}
+            setLoading={setLoading}
+          />
         }
       />
     </Routes>
